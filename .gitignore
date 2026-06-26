@@ -2,3 +2,4 @@
 /.vscode
 /app_logs.txt
 /dist
+/node_modules
