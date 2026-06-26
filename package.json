@@ -1,0 +1,84 @@
+{
+    "name": "relay",
+    "version": "0.1.0",
+    "description": "Electron remote control demo based on relay API + BotJS + WebRTC",
+    "author": "relay",
+    "main": "main.js",
+    "scripts": {
+        "dev": "electron .",
+        "start": "nodemon --watch main.js --watch preload.js --watch src --exec electron .",
+        "prepare:native": "node scripts/prepare-native-assets.js",
+        "pack": "npm run prepare:native && electron-builder --dir",
+        "dist": "npm run prepare:native && electron-builder",
+        "dist:mac": "npm run prepare:native && electron-builder --mac dmg zip --arm64",
+        "dist:win": "npm run prepare:native && electron-builder --win nsis zip --x64"
+    },
+    "dependencies": {
+        "botjs": "github:nhzpthapcd7062/botjs#v0.1.2"
+    },
+    "devDependencies": {
+        "electron": "^30.0.0",
+        "electron-builder": "^24.13.3"
+    },
+    "build": {
+        "appId": "com.botjs.remote.control",
+        "productName": "Relay",
+        "directories": {
+            "output": "dist"
+        },
+        "files": [
+            "node_modules/**/*",
+            "main.js",
+            "preload.js",
+            "src/**/*",
+            "package.json"
+        ],
+        "asarUnpack": [
+            "**/*.node"
+        ],
+        "mac": {
+            "extraResources": [
+                {
+                    "from": "build/native/darwin-arm64/crobot.node",
+                    "to": "native/crobot.node"
+                }
+            ],
+            "target": [
+                {
+                    "target": "dmg",
+                    "arch": [
+                        "arm64"
+                    ]
+                },
+                {
+                    "target": "zip",
+                    "arch": [
+                        "arm64"
+                    ]
+                }
+            ],
+            "category": "public.app-category.productivity"
+        },
+        "win": {
+            "requestedExecutionLevel": "requireAdministrator",
+            "extraResources": [
+                {
+                    "from": "build/native/win32-x64/crobot.node",
+                    "to": "native/crobot.node"
+                }
+            ],
+            "target": [
+                {
+                    "target": "zip",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ]
+        },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
+        }
+    }
+}

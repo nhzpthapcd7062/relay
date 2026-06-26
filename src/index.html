@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Relay Remote Control</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+	<div class="app">
+		<!-- macOS Window Drag Header -->
+		<header class="app-header">
+			<div class="window-controls" id="windowControls" style="display: none;">
+				<button class="mac-btn close" id="winClose" title="关闭">
+					<svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" stroke-linecap="round"><path d="M1.5 1.5L6.5 6.5M1.5 6.5L6.5 1.5"/></svg>
+				</button>
+				<button class="mac-btn minimize" id="winMinimize" title="最小化">
+					<svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="rgba(0,0,0,0.6)" stroke-width="1.2" stroke-linecap="round"><path d="M1.5 4H6.5"/></svg>
+				</button>
+
+			</div>
+			<nav class="header-nav">
+				<button id="navHomeBtn" class="nav-btn active">
+					<span class="nav-icon">📤</span>
+					<span>首页</span>
+				</button>
+				<button id="navControlBtn" class="nav-btn">
+					<span class="nav-icon">🖥️</span>
+					<span>控制</span>
+				</button>
+			</nav>
+			<div class="header-right">
+				<div class="header-status">
+					<div class="pill" id="connectState" title="连接服务状态">
+						<span class="dot"></span>
+						<span class="status-lbl">服务连接</span>
+					</div>
+				</div>
+				<div class="header-actions">
+					<button id="settingsBtn" class="action-icon-btn" title="配置转发地址">
+						<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="12" cy="12" r="3"></circle>
+							<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</header>
+
+		<!-- Settings panel (collapsible) -->
+		<div id="settingsPanel" class="settings-panel hidden">
+			<div class="settings-title">转发层服务器设置</div>
+			<div class="settings-row">
+				<input id="serverUrl" value="wss://121.41.93.22:8081" placeholder="wss://your-relay-server" />
+				<button id="disconnectBtn" class="secondary">断开</button>
+			</div>
+		</div>
+
+		<!-- Main Workspace Grid -->
+		<div class="main-content">
+			<!-- Left Card: Share Local Screen -->
+			<div id="cardShare" class="card card-share">
+				<div class="card-header">
+					<div class="card-icon">📤</div>
+					<div class="card-title-group">
+						<div class="card-title">此设备共享</div>
+						<div class="card-subtitle">共享此屏幕供他人连接</div>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="code-container">
+						<div class="code-label">连接码 (Connection Code)</div>
+						<div class="code-display-wrapper">
+							<div id="sharePassword" class="code-display">- - - - - -</div>
+							<button id="copyCodeBtn" class="copy-btn" title="复制连接码">
+								<svg class="icon-copy" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+									<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+								</svg>
+								<svg class="icon-check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+									<polyline points="20 6 9 17 4 12"></polyline>
+								</svg>
+							</button>
+						</div>
+					</div>
+					<div class="share-info">
+						<div class="info-bullet">打开目标设备上的 Relay 并输入此码。</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Right Card: Control Remote -->
+			<div id="cardControl" class="card card-control hidden">
+				<div class="card-header">
+					<div class="card-icon">🖥️</div>
+					<div class="card-title-group">
+						<div class="card-title">控制其他设备</div>
+						<div class="card-subtitle">控制远端共享的屏幕</div>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="input-container">
+						<label for="password" class="input-label">目标连接码</label>
+						<input id="password" type="text" maxlength="6" placeholder="输入 6 位 Code" autocomplete="off" />
+					</div>
+					<button id="connectBtn" class="primary-btn">
+						<span class="btn-text">连接控制</span>
+						<span class="btn-glow"></span>
+					</button>
+
+					<div class="history-section" id="historySection" style="display: none;">
+						<div class="history-label">最近连接</div>
+						<div class="history-list" id="historyList"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="module" src="./app.js"></script>
+</body>
+
+</html>
