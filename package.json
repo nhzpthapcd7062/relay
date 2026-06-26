@@ -1,6 +1,6 @@
 {
     "name": "relay",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Relay",
     "repository": "github:nhzpthapcd7062/electron",
     "author": "relay",
@@ -15,7 +15,7 @@
         "dist:win": "npm run prepare:native && electron-builder --win nsis zip --x64"
     },
     "dependencies": {
-        "botjs": "github:nhzpthapcd7062/botjs#v0.1.2"
+        "botjs": "git+https://github.com/nhzpthapcd7062/botjs.git#v0.1.2"
     },
     "devDependencies": {
         "electron": "^30.0.0",
