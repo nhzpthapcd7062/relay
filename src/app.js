@@ -306,6 +306,14 @@ async function startSharingFlow() {
 async function executeBotCommand(msg) {
 	const { action, args = [], from } = msg;
 	try {
+		if (action === "syncClipboard") {
+			const text = args[0];
+			if (window.rcBridge?.clipboardWriteText && text) {
+				await window.rcBridge.clipboardWriteText(text);
+			}
+			return;
+		}
+
 		const result = await window.rcBridge.botAction(action, args);
 		if (action === "moveMouse") return; // Reduce network spam for high-frequency actions
 		const reply = {
@@ -506,6 +514,9 @@ function bindEvents() {
 			setMode("control");
 			appLog("尝试连接控制", { code });
 			send({ type: "authenticate", code });
+		},
+		onServerConnectClick: () => {
+			connectRelay();
 		},
 		onDisconnectClick: () => {
 			disconnectRelay();

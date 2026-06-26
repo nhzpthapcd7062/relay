@@ -1,21 +1,21 @@
 :root {
-	--bg: #0b0f19;
-	--card-bg: rgba(20, 26, 42, 0.65);
-	--border-color: rgba(255, 255, 255, 0.08);
-	--border-color-hover: rgba(255, 255, 255, 0.15);
-	--text-primary: #f3f4f6;
-	--text-secondary: #9ca3af;
-	--text-muted: #6b7280;
-	--accent-primary: #4f46e5;
+	--bg: #f8fafc;
+	--card-bg: #ffffff;
+	--border-color: rgba(0, 0, 0, 0.08);
+	--border-color-hover: rgba(0, 0, 0, 0.15);
+	--text-primary: #0f172a;
+	--text-secondary: #475569;
+	--text-muted: #94a3b8;
+	--accent-primary: #2563eb;
 	--accent-secondary: #3b82f6;
-	--accent-gradient: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-	--accent-glow: rgba(79, 70, 229, 0.35);
+	--accent-gradient: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+	--accent-glow: rgba(37, 99, 235, 0.25);
 	--danger: #ef4444;
 	--success: #10b981;
-	--radius-lg: 16px;
-	--radius-md: 10px;
-	--radius-sm: 6px;
-	--shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+	--radius-lg: 4px;
+	--radius-md: 4px;
+	--radius-sm: 4px;
+	--shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
 	--font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 	--font-mono: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
 }
@@ -33,7 +33,7 @@ body {
 	overflow: hidden;
 	color: var(--text-primary);
 	font-family: var(--font-sans);
-	background: radial-gradient(circle at 50% 0%, #171d32 0%, #0b0f19 100%);
+	background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-app-region: drag; /* Window drag */
@@ -137,20 +137,40 @@ body::after {
 }
 
 .header-nav {
+	position: relative;
 	display: flex;
-	background: rgba(255, 255, 255, 0.03);
-	border: 1px solid var(--border-color);
-	border-radius: 20px;
-	padding: 2px;
+	background: #ffffff;
+	border: 1px solid rgba(0, 0, 0, 0.06);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+	border-radius: 4px;
+	padding: 3px;
 	gap: 2px;
 	-webkit-app-region: no-drag;
+	z-index: 1;
+}
+.nav-slider {
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	height: calc(100% - 6px);
+	width: calc(50% - 4px);
+	background: var(--accent-gradient);
+	border-radius: 3px;
+	box-shadow: 0 2px 8px var(--accent-glow);
+	transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+	z-index: -1;
+}
+.header-nav.control-mode .nav-slider {
+	transform: translateX(calc(100% + 2px));
 }
 .nav-btn {
+	flex: 1;
+	justify-content: center;
 	background: transparent;
 	border: none;
 	color: var(--text-secondary);
 	padding: 6px 14px;
-	border-radius: 18px;
+	border-radius: 4px;
 	font-size: 12px;
 	font-weight: 600;
 	display: flex;
@@ -161,12 +181,10 @@ body::after {
 }
 .nav-btn:hover {
 	color: var(--text-primary);
-	background: rgba(255, 255, 255, 0.05);
+	background: rgba(0, 0, 0, 0.04);
 }
 .nav-btn.active {
-	background: var(--accent-gradient);
 	color: #ffffff;
-	box-shadow: 0 2px 8px var(--accent-glow);
 }
 .nav-icon {
 	font-size: 13px;
@@ -192,10 +210,10 @@ body::after {
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
-	background: rgba(255, 255, 255, 0.03);
+	background: rgba(0, 0, 0, 0.03);
 	border: 1px solid var(--border-color);
 	padding: 4px 10px;
-	border-radius: 20px;
+	border-radius: 4px;
 	font-size: 11px;
 	font-weight: 600;
 	transition: all 0.3s ease;
@@ -248,8 +266,8 @@ body::after {
 	transition: all 0.2s ease;
 }
 .action-icon-btn:hover {
-	color: var(--text-primary);
-	background: rgba(255, 255, 255, 0.08);
+	color: var(--accent-primary);
+	background: #f1f5f9;
 }
 .action-icon-btn svg {
 	transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -258,33 +276,50 @@ body::after {
 	transform: rotate(45deg);
 }
 
-/* Settings Drawer */
+/* Modal Backdrop */
+.modal-backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+	backdrop-filter: blur(4px);
+	z-index: 100;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.25s ease;
+	opacity: 1;
+	pointer-events: auto;
+}
+.modal-backdrop.hidden {
+	opacity: 0;
+	pointer-events: none;
+}
+
+/* Settings Modal */
 .settings-panel {
-	background: rgba(13, 19, 33, 0.95);
+	background: #ffffff;
 	border: 1px solid var(--border-color);
-	border-radius: var(--radius-md);
-	padding: 12px;
-	margin-bottom: 12px;
-	box-shadow: var(--shadow);
+	border-radius: var(--radius-lg);
+	padding: 16px;
+	width: 320px;
+	box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.2);
 	-webkit-app-region: no-drag;
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
-	transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-	opacity: 1;
-	transform: translateY(0);
-	max-height: 150px;
-	overflow: hidden;
+	gap: 12px;
+	transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+	transform: scale(1);
 }
-.settings-panel.hidden {
-	max-height: 0;
-	padding-top: 0;
-	padding-bottom: 0;
-	margin-bottom: 0;
-	border-color: transparent;
-	opacity: 0;
-	transform: translateY(-10px);
-	pointer-events: none;
+.modal-backdrop.hidden .settings-panel {
+	transform: scale(0.95) translateY(10px);
+}
+.settings-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 .settings-title {
 	font-size: 11px;
@@ -293,23 +328,47 @@ body::after {
 	letter-spacing: 1px;
 	color: var(--text-muted);
 }
-.settings-row {
+.settings-body {
+	padding: 4px 0;
+}
+.input-group {
 	display: flex;
+	flex-direction: column;
 	gap: 8px;
 }
-.settings-row input {
-	flex: 1;
-	background: rgba(0, 0, 0, 0.3);
+.input-group label {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--text-secondary);
+}
+.input-group input {
+	width: 100%;
+	background: #f8fafc;
 	border: 1px solid var(--border-color);
 	border-radius: var(--radius-sm);
-	padding: 6px 10px;
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+	padding: 8px 12px;
 	color: var(--text-primary);
+	transition: all 0.25s ease;
 	font-family: var(--font-mono);
-	font-size: 12px;
+	font-size: 13px;
 }
-.settings-row input:focus {
+.input-group input:focus {
 	outline: none;
-	border-color: var(--accent-secondary);
+	background: #ffffff;
+	border-color: var(--accent-primary);
+	box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+.settings-footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 4px;
+}
+.settings-footer button {
+	height: 34px;
+	padding: 0 16px;
+	font-size: 12px;
 }
 
 /* Main workspace cards grid */
@@ -341,8 +400,8 @@ body::after {
 	overflow: hidden;
 }
 .card:hover {
-	border-color: rgba(255, 255, 255, 0.15);
-	box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.04);
+	border-color: rgba(0, 0, 0, 0.15);
+	box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.15), 0 0 1px 1px rgba(0, 0, 0, 0.04);
 	transform: translateY(-2px);
 }
 
@@ -367,17 +426,11 @@ body::after {
 	gap: 10px;
 }
 .card-icon {
-	width: 38px;
-	height: 38px;
-	border-radius: 50%;
-	background: rgba(255, 255, 255, 0.05);
-	border: 1px solid var(--border-color);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 16px;
 	flex-shrink: 0;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	color: var(--text-primary);
 }
 .card-title-group {
 	display: flex;
@@ -417,8 +470,9 @@ body::after {
 .code-display-wrapper {
 	display: flex;
 	align-items: center;
-	background: rgba(0, 0, 0, 0.3);
+	background: #f8fafc;
 	border: 1px solid var(--border-color);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 	border-radius: var(--radius-md);
 	padding: 8px 12px;
 	height: 48px;
@@ -431,7 +485,7 @@ body::after {
 	font-weight: 700;
 	letter-spacing: 4px;
 	color: var(--text-primary);
-	text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+	text-shadow: none;
 	text-align: center;
 	padding-left: 28px; /* Offset the copy button to perfectly center the text */
 }
@@ -448,8 +502,8 @@ body::after {
 	transition: all 0.2s ease;
 }
 .copy-btn:hover {
-	color: var(--text-primary);
-	background: rgba(255, 255, 255, 0.08);
+	color: var(--accent-primary);
+	background: #f1f5f9;
 }
 .copy-btn svg {
 	transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
@@ -478,11 +532,19 @@ body::after {
 	color: var(--text-muted);
 	letter-spacing: 0.5px;
 }
+.input-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
 .input-container input {
-	background: rgba(0, 0, 0, 0.3);
+	width: 100%;
+	background: #f8fafc;
 	border: 1px solid var(--border-color);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 	border-radius: var(--radius-md);
-	padding: 0 12px;
+	padding: 0 40px 0 12px;
 	height: 48px;
 	color: var(--text-primary);
 	font-family: var(--font-mono);
@@ -502,9 +564,31 @@ body::after {
 }
 .input-container input:focus {
 	outline: none;
-	border-color: var(--accent-secondary);
-	box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2), 0 0 10px rgba(59, 130, 246, 0.1);
-	background: rgba(0, 0, 0, 0.35);
+	background: #ffffff;
+	border-color: var(--accent-primary);
+	box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+.clear-btn {
+	position: absolute;
+	right: 6px;
+	background: transparent;
+	border: none;
+	color: var(--text-secondary);
+	cursor: pointer;
+	padding: 6px;
+	border-radius: var(--radius-sm);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+}
+.clear-btn:hover {
+	color: var(--accent-primary);
+	background: #f1f5f9;
+}
+.clear-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
 }
 
 /* Premium Buttons */
@@ -536,7 +620,7 @@ button {
 }
 .primary-btn:hover {
 	transform: translateY(-1.5px);
-	box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+	box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
 }
 .primary-btn:active {
 	transform: translateY(0.5px);
@@ -565,14 +649,15 @@ button {
 }
 
 button.secondary {
-	background: rgba(255, 255, 255, 0.05);
+	background: rgba(0, 0, 0, 0.05);
 	color: var(--text-primary);
 	border: 1px solid var(--border-color);
 	padding: 6px 14px;
 }
 button.secondary:hover {
-	background: rgba(255, 255, 255, 0.08);
-	border-color: var(--border-color-hover);
+	background: #f1f5f9;
+	color: var(--accent-primary);
+	border-color: var(--accent-secondary);
 }
 
 /* Logs panel has been optimized out */
@@ -619,8 +704,8 @@ button.secondary:hover {
 }
 .history-list {
 	display: flex;
-	flex-direction: column;
-	gap: 6px;
+	flex-wrap: wrap;
+	gap: 8px;
 	max-height: 120px;
 	overflow-y: auto;
 }
@@ -634,24 +719,24 @@ button.secondary:hover {
 .history-item {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	background: rgba(255, 255, 255, 0.03);
+	gap: 6px;
+	background: rgba(0, 0, 0, 0.03);
 	border: 1px solid var(--border-color);
-	border-radius: var(--radius-sm);
-	padding: 8px 12px;
+	border-radius: 4px;
+	padding: 4px 10px;
 	cursor: pointer;
 	transition: all 0.2s ease;
 }
 .history-item:hover {
-	background: rgba(255, 255, 255, 0.08);
-	border-color: var(--border-color-hover);
+	background: #f1f5f9;
+	border-color: var(--accent-secondary);
 }
 .history-code {
 	font-family: var(--font-mono);
-	font-size: 13px;
+	font-size: 12px;
 	font-weight: 600;
 	color: var(--text-primary);
-	letter-spacing: 2px;
+	letter-spacing: 1px;
 }
 .history-del-btn {
 	background: transparent;
@@ -667,5 +752,5 @@ button.secondary:hover {
 }
 .history-del-btn:hover {
 	color: #ef4444;
-	background: rgba(239, 68, 68, 0.1);
+	background: #fee2e2;
 }

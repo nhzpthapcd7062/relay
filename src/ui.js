@@ -2,14 +2,18 @@ export class UIManager {
 	constructor() {
 		this.els = {
 			serverUrl: document.getElementById("serverUrl"),
+			serverConnectBtn: document.getElementById("serverConnectBtn"),
 			connectBtn: document.getElementById("connectBtn"),
 			disconnectBtn: document.getElementById("disconnectBtn"),
 			password: document.getElementById("password"),
 			sharePassword: document.getElementById("sharePassword"),
 			connectState: document.getElementById("connectState"),
 			settingsBtn: document.getElementById("settingsBtn"),
+			settingsBackdrop: document.getElementById("settingsBackdrop"),
+			settingsCloseBtn: document.getElementById("settingsCloseBtn"),
 			settingsPanel: document.getElementById("settingsPanel"),
 			copyCodeBtn: document.getElementById("copyCodeBtn"),
+			clearCodeBtn: document.getElementById("clearCodeBtn"),
 			navHomeBtn: document.getElementById("navHomeBtn"),
 			navControlBtn: document.getElementById("navControlBtn"),
 			cardShare: document.getElementById("cardShare"),
@@ -25,6 +29,7 @@ export class UIManager {
 			onSettingsToggle,
 			onCopyCode,
 			onConnectClick,
+			onServerConnectClick,
 			onDisconnectClick,
 		} = callbacks;
 
@@ -60,10 +65,35 @@ export class UIManager {
 			}
 		});
 
-		// Copy Code
+		// Modal Close Logic
+		this.els.settingsCloseBtn?.addEventListener("click", () => {
+			this.els.settingsBackdrop?.classList.add("hidden");
+		});
+		this.els.settingsBackdrop?.addEventListener("click", (e) => {
+			if (e.target === this.els.settingsBackdrop) {
+				this.els.settingsBackdrop.classList.add("hidden");
+			}
+		});
+
+		// Copy functionality
 		this.els.copyCodeBtn?.addEventListener("click", () => {
 			onCopyCode?.();
 		});
+
+		// Clear Code
+		if (this.els.password && this.els.clearCodeBtn) {
+			const toggleClearBtn = () => {
+				this.els.clearCodeBtn.style.display = this.els.password.value.length > 0 ? "flex" : "none";
+			};
+			this.els.password.addEventListener("input", toggleClearBtn);
+			toggleClearBtn();
+
+			this.els.clearCodeBtn.addEventListener("click", () => {
+				this.els.password.value = "";
+				this.els.password.focus();
+				toggleClearBtn();
+			});
+		}
 
 		// Connect Remote Control
 		this.els.connectBtn?.addEventListener("click", () => {
@@ -71,9 +101,15 @@ export class UIManager {
 			onConnectClick?.(code);
 		});
 
+		this.els.serverConnectBtn?.addEventListener("click", () => {
+			onServerConnectClick?.();
+			this.els.settingsBackdrop?.classList.add("hidden");
+		});
+
 		// Disconnect Relay Client
 		this.els.disconnectBtn?.addEventListener("click", () => {
 			onDisconnectClick?.();
+			this.els.settingsBackdrop?.classList.add("hidden");
 		});
 	}
 
@@ -120,11 +156,13 @@ export class UIManager {
 
 	setMode(mode) {
 		if (mode === "share") {
+			this.els.navHomeBtn?.closest('.header-nav')?.classList.remove("control-mode");
 			this.els.navHomeBtn?.classList.add("active");
 			this.els.navControlBtn?.classList.remove("active");
 			this.els.cardShare?.classList.remove("hidden");
 			this.els.cardControl?.classList.add("hidden");
 		} else if (mode === "control") {
+			this.els.navHomeBtn?.closest('.header-nav')?.classList.add("control-mode");
 			this.els.navHomeBtn?.classList.remove("active");
 			this.els.navControlBtn?.classList.add("active");
 			this.els.cardShare?.classList.add("hidden");
@@ -144,7 +182,7 @@ export class UIManager {
 	}
 
 	toggleSettingsPanel() {
-		this.els.settingsPanel?.classList.toggle("hidden");
+		this.els.settingsBackdrop?.classList.toggle("hidden");
 	}
 
 	getServerUrl() {

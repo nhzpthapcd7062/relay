@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const https = require("https");
-const { app, BrowserWindow, ipcMain, desktopCapturer } = require("electron");
+const { app, BrowserWindow, ipcMain, desktopCapturer, clipboard } = require("electron");
 
 const isDev = process.env.NODE_ENV !== "production";
 if (isDev) {
@@ -329,6 +329,14 @@ ipcMain.handle("app:log", async (_event, text) => {
 	} catch (err) {
 		// ignore
 	}
+});
+
+ipcMain.handle("clipboard:read", async () => {
+	return clipboard.readText();
+});
+
+ipcMain.handle("clipboard:write", async (_event, text) => {
+	clipboard.writeText(text);
 });
 
 ipcMain.handle("desktop:get-source-id", async () => {

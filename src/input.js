@@ -199,7 +199,22 @@ export class InputManager {
 				const tag = `${key}:${mods.ctrl}:${mods.shift}:${mods.alt}:${mods.meta}`;
 				if (!this.pendingTapKeys.has(tag)) {
 					this.pendingTapKeys.add(tag);
-					this.sendBotAction("keyTap", [key, mods]);
+					
+					const isWindows = window.rcBridge?.isWindows;
+					const isPasteCommand = key === "v" && (isWindows ? mods.ctrl : mods.meta);
+
+					if (isPasteCommand && window.rcBridge?.clipboardReadText) {
+						window.rcBridge.clipboardReadText().then((text) => {
+							if (text) {
+								this.sendBotAction("syncClipboard", [text]);
+							}
+							this.sendBotAction("keyTap", [key, mods]);
+						}).catch(() => {
+							this.sendBotAction("keyTap", [key, mods]);
+						});
+					} else {
+						this.sendBotAction("keyTap", [key, mods]);
+					}
 				}
 				event.preventDefault();
 				return;
