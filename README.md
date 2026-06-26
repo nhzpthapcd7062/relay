@@ -24,10 +24,10 @@ npm start
 # 本机打包当前系统可支持的目标
 npm run dist
 
-# 仅打包 macOS arm64（dmg + zip）
+# 仅打包 macOS arm64（dmg）
 npm run dist:mac
 
-# 仅打包 Windows x64（nsis + zip）
+# 仅打包 Windows x64（zip）
 npm run dist:win
 ```
 
